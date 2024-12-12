@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -13,12 +14,32 @@ import (
 func main() {
 	fmt.Println("=== day 1 ===")
 	lines := readFile("./input.txt")
+
+	//==================== part 1
 	distance := 0
 	arrL, arrR := splitAndSortInput(lines)
 	for i := 0; i < len(lines); i++ {
 		distance += distanceBetween(float64(arrL[i]), float64(arrR[i]))
 	}
-	fmt.Println(distance)
+	fmt.Println("dist: ", distance)
+
+	//==================== part 2
+
+	//calculate frequency of every number in arrR
+	freq := make(map[int]int)
+	for _, num := range arrR {
+		freq[num] = freq[num] + 1
+	}
+
+	//filter duplicates in left slice
+	slices.Sort(arrL)
+	arrL = slices.Compact(arrL)
+
+	similarity_score := 0
+	for _, v := range arrL {
+		similarity_score += (v * freq[v])
+	}
+	fmt.Println("similarity_score: ", similarity_score)
 }
 
 func splitAndSortInput(lines []string) ([]int, []int) {
